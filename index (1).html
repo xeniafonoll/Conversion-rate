@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Registro de atenciones</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Jost:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f4f4f1;--card:#fff;--ink:#1b1b1d;--mut:#6c6b67;--line:#e2e0da;--gold:#97763a;--ok:#2b6a4d;--no:#8a3a3a;--bar:#2a2a2d;--track:#ecebe6;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#141416;--card:#1e1e21;--ink:#efeee9;--mut:#9a9890;--line:#303034;--gold:#c9a45c;--ok:#4a9a73;--no:#c06a6a;--bar:#d8d6cf;--track:#2a2a2e;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#141416;--card:#1e1e21;--ink:#efeee9;--mut:#9a9890;--line:#303034;--gold:#c9a45c;--ok:#4a9a73;--no:#c06a6a;--bar:#d8d6cf;--track:#2a2a2e;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.45 Jost,"Helvetica Neue",Arial,sans-serif}
+.wrap{max-width:940px;margin:0 auto;padding:18px 14px 48px}
+h1{font:600 30px/1.1 "Cormorant Garamond",Georgia,serif;margin:0 0 14px;letter-spacing:.2px}
+h2{font:600 22px/1.2 "Cormorant Garamond",Georgia,serif;margin:0 0 10px}
+.tabs{display:flex;gap:8px;margin-bottom:18px}
+.tab{flex:1;padding:12px;border:1px solid var(--line);background:var(--card);color:var(--mut);font:500 16px Jost,sans-serif;border-radius:8px;cursor:pointer}
+.tab[aria-selected="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.hidden{display:none!important}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:16px}
+label{display:block;font-weight:500;margin-bottom:12px}
+input,select{width:100%;margin-top:4px;padding:12px;font:400 16px Jost,sans-serif;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink)}
+button{font-family:inherit}
+.btn{padding:13px 20px;border-radius:8px;border:0;background:var(--ink);color:var(--bg);font:500 16px Jost,sans-serif;cursor:pointer}
+.link{background:none;border:0;color:var(--gold);font:500 15px Jost,sans-serif;text-decoration:underline;cursor:pointer;padding:6px 0}
+.mut{color:var(--mut);font-size:14px}
+.who{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.today{font:500 15px Jost,sans-serif;color:var(--mut);margin-bottom:16px}
+.today b{color:var(--ink);font-weight:600}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.big{min-height:150px;border-radius:14px;border:0;color:#fff;font:600 24px/1.2 Jost,sans-serif;cursor:pointer;padding:14px}
+.big.ok{background:var(--ok)}.big.no{background:var(--no)}
+.big:active,.chip:active{transform:scale(.98)}
+.chips{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0 8px}
+.chip{min-height:68px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:500 17px/1.2 Jost,sans-serif;cursor:pointer;padding:10px}
+#flash{min-height:26px;margin:10px 0 0;font-weight:500;color:var(--ok)}
+#flash.err{color:var(--no)}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.filters{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:16px}
+.filters label{margin:0;font-size:13px;color:var(--mut)}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px}
+.kpi span{display:block;color:var(--mut);font-size:14px}
+.kpi b{font:600 38px/1.1 "Cormorant Garamond",Georgia,serif}
+.kpi.main b{color:var(--gold)}
+.note{background:var(--card);border-left:3px solid var(--gold);padding:12px 14px;margin-bottom:16px;border-radius:0 8px 8px 0}
+.vc{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px}
+.vcol{flex:1 0 38px;display:flex;flex-direction:column;align-items:center;text-align:center;font-size:12px}
+.vb{height:120px;width:100%;display:flex;align-items:flex-end;background:var(--track);border-radius:4px}
+.vb i{display:block;width:100%;background:var(--bar);border-radius:4px 4px 0 0}
+.hl .vb i{background:var(--gold)}
+.vt{height:16px;color:var(--mut)}.vl{font-weight:600;margin-top:4px}.vs{color:var(--mut);font-size:11px;min-height:14px}
+.seg{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
+.seg button{padding:7px 14px;border-radius:99px;border:1px solid var(--line);background:var(--bg);color:var(--mut);font:500 14px Jost,sans-serif;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.hb{display:grid;grid-template-columns:minmax(120px,38%) 1fr auto;gap:10px;align-items:center;margin:8px 0;font-size:15px}
+.hb div{height:12px;background:var(--track);border-radius:6px}.hb i{display:block;height:100%;background:var(--no);border-radius:6px}
+.scroll{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{padding:9px 8px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}
+th:first-child,td:first-child{text-align:left}
+th{color:var(--mut);font-weight:500}
+td small{display:block;color:var(--mut);font-size:11px}
+td:first-child small{display:inline;margin-left:6px}
+.empty{text-align:center;color:var(--mut);padding:40px 10px}
+.ot{list-style:none;padding:0;margin:0}.ot li{padding:8px 0;border-bottom:1px solid var(--line)}.ot small{display:block;color:var(--mut);font-size:12px}
+.chk{display:flex;align-items:center;gap:8px;font-weight:400}.chk input{width:auto;margin:0}
+@media(max-width:560px){.filters{grid-template-columns:1fr}.kpi b{font-size:30px}.big{font-size:21px;min-height:130px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Registro de atenciones</h1>
+  <div class="tabs" role="tablist">
+    <button class="tab" id="t-reg" role="tab" aria-selected="true">Registrar</button>
+    <button class="tab" id="t-st" role="tab" aria-selected="false">Estadísticas</button>
+  </div>
+
+  <section id="v-reg">
+    <div id="setup" class="card hidden">
+      <h2>¿Quién eres?</h2>
+      <label>Vendedor/a<input id="in-seller" list="dl-seller" autocomplete="off" placeholder="Tu nombre"></label>
+      <button class="btn" id="save-me">Guardar</button>
+      <p class="mut">Se recuerda en este dispositivo. Si tu nombre ya aparece en la lista, elígelo para no duplicarlo.</p>
+      <datalist id="dl-seller"></datalist>
+    </div>
+    <div id="log" class="hidden">
+      <div class="who"><strong id="who"></strong><button class="link" id="chg">Cambiar</button></div>
+      <div class="today" id="today"></div>
+      <div id="step1" class="two">
+        <button class="big ok" id="b-yes">Ha comprado</button>
+        <button class="big no" id="b-no">No ha comprado</button>
+      </div>
+      <div id="step2" class="hidden">
+        <h2>¿Por qué no ha comprado?</h2>
+        <div class="chips" id="reasons"></div>
+        <div id="other" class="hidden"><label>Escribe el motivo<input id="in-other" maxlength="120" autocomplete="off"></label><button class="btn" id="save-other">Guardar</button></div>
+        <button class="link" id="back">Volver</button>
+      </div>
+      <div id="flash" role="status"></div>
+      <button class="link hidden" id="undo">Deshacer el último registro</button>
+    </div>
+  </section>
+
+  <section id="v-st" class="hidden">
+    <div id="lock" class="card hidden">
+      <h2>Estadísticas</h2>
+      <label>Clave<input id="in-key" type="password" autocomplete="current-password" placeholder="Clave de acceso"></label>
+      <label class="chk"><input id="rem" type="checkbox"> Recordar en este dispositivo</label>
+      <button class="btn" id="unlock">Entrar</button>
+      <p id="lock-msg" class="mut" style="color:var(--no)"></p>
+    </div>
+    <div id="statbox" class="hidden">
+    <div class="filters">
+      <label>Vendedor/a<select id="f-se"></select></label>
+      <label>Periodo
+        <select id="f-pe">
+          <option value="hoy">Hoy</option><option value="sem">Esta semana</option>
+          <option value="mes" selected>Este mes</option><option value="anio">Este año</option><option value="todo">Todo</option>
+        </select>
+      </label>
+    </div>
+    <div id="out"><p class="empty">Cargando datos…</p></div>
+    <button class="btn hidden" id="csv">Descargar todo en CSV</button>
+    <button class="link" id="lockbtn">Bloquear estadísticas</button>
+    </div>
+  </section>
+</div>
+
+<script>
+// Pega aquí la URL de la app web de Apps Script (termina en /exec):
+const API="PEGA_AQUI_LA_URL_DE_LA_APP_WEB";
+const REASONS={P:"Precio",S:"Sin stock, talla o color",M:"Solo mira",T:"Lo pensará, volverá",C:"Compara con otra tienda",N:"No encuentra lo que busca",O:"Otro motivo"};
+const DIAS=["Lun","Mar","Mié","Jue","Vie","Sáb","Dom"],MES=["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"];
+const $=s=>document.querySelector(s);
+const pad=n=>String(n).padStart(2,"0");
+const ymd=d=>d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());
+const slug=s=>s.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().trim().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")||"x";
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const pct=(a,b)=>b?a*100/b:null;
+const fp=v=>v==null?"–":v.toFixed(1).replace(".",",")+" %";
+const S={all:[],mine:[],key:null,loaded:false,dl:true};
+let me=null,tab="reg",gran="d",chain=Promise.resolve(),seq=0;
+try{me=JSON.parse(localStorage.getItem("lux_me")||"null")}catch(e){}
+
+/* ---------- datos ---------- */
+const call=(fn,...a)=>fetch(API,{method:"POST",body:JSON.stringify({fn,a})}).then(r=>r.json()).then(r=>{if(r.err)throw new Error(r.err);return r.v});
+const flat=()=>S.all;
+function mk(r){
+  const [y,m,d]=r[0].split("-").map(Number);
+  return{date:r[0],m:r[1],seller:r[2],vk:slug(r[2]),dow:(new Date(y,m-1,d).getDay()+6)%7,h:Math.floor(r[1]/60),code:r[3],txt:r[4]||"",buy:r[3]==="B"};
+}
+function bounds(){
+  const n=new Date(),w=new Date(n);w.setDate(n.getDate()-((n.getDay()+6)%7));
+  const t=ymd(n);return{hoy:t,sem:ymd(w),mes:t.slice(0,7)+"-01",anio:t.slice(0,4)+"-01-01",todo:"0000"};
+}
+
+/* ---------- registrar ---------- */
+let ft;function flash(t,err){const f=$("#flash");f.textContent=t;f.className=err?"err":"";clearTimeout(ft);ft=setTimeout(()=>f.textContent="",err?6000:2500)}
+function add(code,txt){
+  const n=new Date(),date=ymd(n),sl=me.seller,e={id:null,code,date};
+  S.mine.push(e);today();
+  chain=chain.then(()=>call("addEvent",sl,date,n.getHours()*60+n.getMinutes(),code,txt||"")).then(id=>{e.id=id})
+    .catch(()=>{const i=S.mine.indexOf(e);if(i>=0)S.mine.splice(i,1);today();flash("No se pudo guardar. Repite el último registro.",true)});
+  flash(code==="B"?"✓ Compra registrada":"✓ Registrado");step(1);
+}
+function undo(){
+  const e=S.mine.pop();if(!e)return;today();
+  chain=chain.then(()=>e.id&&call("undoEvent",e.id,e.date)).catch(()=>flash("No se pudo deshacer.",true));
+  flash("Último registro deshecho");
+}
+function step(n){$("#step1").classList.toggle("hidden",n!==1);$("#step2").classList.toggle("hidden",n!==2);$("#other").classList.add("hidden");$("#reasons").classList.remove("hidden");$("#in-other").value=""}
+function viewReg(){
+  const has=me&&me.seller;
+  $("#setup").classList.toggle("hidden",!!has);$("#log").classList.toggle("hidden",!has);
+  if(has){$("#who").textContent=me.seller;today();const d=ymd(new Date());call("getToday",me.seller,d).then(r=>{S.mine=r.map(x=>({id:x[0],code:x[1],date:d}));today()}).catch(()=>{})}
+}
+function today(){
+  const t=ymd(new Date()),mine=S.mine.filter(e=>e.date===t),b=mine.filter(e=>e.code==="B").length;
+  $("#today").innerHTML=`Hoy: <b>${mine.length}</b> atenciones · <b>${b}</b> compras · <b>${fp(pct(b,mine.length))}</b> de conversión`;
+  $("#undo").classList.toggle("hidden",!mine.length);
+}
+$("#reasons").innerHTML=Object.entries(REASONS).map(([k,v])=>`<button class="chip" data-c="${k}">${v}</button>`).join("");
+$("#reasons").onclick=e=>{const c=e.target.closest("[data-c]");if(!c)return;if(c.dataset.c==="O"){$("#reasons").classList.add("hidden");$("#other").classList.remove("hidden");$("#in-other").focus()}else add(c.dataset.c)};
+$("#save-other").onclick=()=>add("O",$("#in-other").value.trim());
+$("#in-other").onkeydown=e=>{if(e.key==="Enter")add("O",$("#in-other").value.trim())};
+$("#b-yes").onclick=()=>add("B");
+$("#b-no").onclick=()=>step(2);
+$("#back").onclick=()=>step($("#other").classList.contains("hidden")?1:2);
+$("#undo").onclick=undo;
+$("#chg").onclick=()=>{me=null;S.mine=[];viewReg()};
+$("#save-me").onclick=()=>{
+  const v=$("#in-seller").value.trim();
+  if(!v)return;
+  me={seller:v};try{localStorage.setItem("lux_me",JSON.stringify(me))}catch(e){}
+  viewReg();
+};
+
+/* ---------- estadísticas ---------- */
+function vchart(items){
+  const mx=Math.max(0,...items.map(i=>i.v))||1;
+  return `<div class="vc">`+items.map(i=>`<div class="vcol${i.hl?" hl":""}"><span class="vt">${i.top}</span><div class="vb"><i style="height:${i.v?Math.max(i.v/mx*100,3):0}%"></i></div><span class="vl">${i.label}</span><span class="vs">${i.sub||""}</span></div>`).join("")+`</div>`;
+}
+function bucket(d,g){
+  if(g==="d")return d;if(g==="m")return d.slice(0,7);if(g==="y")return d.slice(0,4);
+  const [y,m,dd]=d.split("-").map(Number),t=new Date(y,m-1,dd);t.setDate(dd-((t.getDay()+6)%7));return ymd(t);
+}
+function blabel(k,g){
+  if(g==="y")return k;if(g==="m"){const [y,m]=k.split("-");return MES[+m-1]+" "+y.slice(2)}
+  const [,m,d]=k.split("-");return d+"/"+m;
+}
+function matrix(list,keyf,namef){
+  const B=bounds(),cols=[["Hoy","hoy"],["Semana","sem"],["Mes","mes"],["Año","anio"],["Total","todo"]],g=new Map();
+  for(const e of list){
+    const k=keyf(e);let r=g.get(k);
+    if(!r){r={name:namef(e),st:new Set(),c:{}};cols.forEach(c=>r.c[c[1]]=[0,0]);g.set(k,r)}
+    for(const [,p] of cols)if(e.date>=B[p]){r.c[p][0]++;if(e.buy)r.c[p][1]++}
+  }
+  const rows=[...g.values()].sort((a,b)=>b.c.todo[0]-a.c.todo[0]);
+  return `<div class="scroll"><table><tr><th></th>${cols.map(c=>`<th>${c[0]}</th>`).join("")}</tr>`+rows.map(r=>`<tr><td>${esc(r.name)}</td>${cols.map(c=>{const [n,b]=r.c[c[1]];return `<td>${n?fp(pct(b,n)):"–"}<small>${b}/${n}</small></td>`}).join("")}</tr>`).join("")+`</table></div>`;
+}
+function otros(sel){
+  const ot=sel.filter(e=>e.code==="O"&&e.txt).sort((a,c)=>c.date.localeCompare(a.date)||c.m-a.m).slice(0,30);
+  if(!ot.length)return"";
+  return `<h2 style="margin-top:18px">Otros motivos, tal como los han escrito</h2><ul class="ot">`+ot.map(e=>`<li>${esc(e.txt)}<small>${e.date.slice(8)}/${e.date.slice(5,7)} · ${esc(e.seller)}</small></li>`).join("")+`</ul>`;
+}
+function stats(){
+  const L=flat(),out=$("#out");
+  $("#csv").classList.toggle("hidden",!L.length||!S.dl);
+  const u=(k,n)=>[...new Map(L.map(e=>[e[k],e[n]]))].sort((a,b)=>a[1].localeCompare(b[1]));
+  const opts=(el,arr,all)=>{const c=el.value;el.innerHTML=`<option value="">${all}</option>`+arr.map(([k,n])=>`<option value="${k}">${esc(n)}</option>`).join("");el.value=c};
+  opts($("#f-se"),u("vk","seller"),"Todos");
+  if(!L.length){out.innerHTML=`<p class="empty">${S.loaded?"Todavía no hay atenciones registradas. En cuanto los vendedores empiecen a apuntar, aparecerán aquí.":"Cargando datos…"}</p>`;return}
+  const fv=$("#f-se").value,B=bounds();
+  const base=L.filter(e=>!fv||e.vk===fv),sel=base.filter(e=>e.date>=B[$("#f-pe").value]);
+  const n=sel.length,b=sel.filter(e=>e.buy).length;
+  let h=`<div class="kpis"><div class="kpi"><span>Atenciones</span><b>${n}</b></div><div class="kpi"><span>Compras</span><b>${b}</b></div><div class="kpi main"><span>Conversión</span><b>${fp(pct(b,n))}</b></div></div>`;
+  if(!n){out.innerHTML=h+`<p class="empty">No hay atenciones con estos filtros.</p>`;return}
+
+  const hs=sel.map(e=>e.h),lo=Math.min(10,...hs),hi=Math.max(20,...hs),H=[];
+  for(let x=lo;x<=hi;x++){const a=sel.filter(e=>e.h===x);H.push({x,n:a.length,b:a.filter(e=>e.buy).length,c:pct(a.filter(e=>e.buy).length,a.length)})}
+  const peak=H.reduce((p,q)=>q.n>p.n?q:p,H[0]);
+  const ok=H.filter(q=>q.n>=3),best=ok.length?ok.reduce((p,q)=>q.c>p.c||(q.c===p.c&&q.n>p.n)?q:p):null;
+  h+=`<div class="note">Hora punta de tráfico: <b>${peak.x}:00</b> (${peak.n} atenciones).${best?` Mejor conversión: <b>${best.x}:00</b> (${fp(best.c)}, ${best.n} atenciones).`:" Aún hay pocos datos por hora para señalar la mejor conversión."}</div>`;
+  h+=`<div class="card"><h2>Tráfico por hora</h2>${vchart(H.map(q=>({v:q.n,top:q.n||"",label:q.x+"h",hl:q===peak})))}</div>`;
+  h+=`<div class="card"><h2>Conversión por hora</h2>${vchart(H.map(q=>({v:q.c||0,top:q.c==null?"":Math.round(q.c)+"%",label:q.x+"h",sub:q.n?q.n+" at.":"",hl:q===best})))}<p class="mut">Se marca la mejor hora solo con 3 atenciones o más.</p></div>`;
+
+  const D=DIAS.map((nm,i)=>{const a=sel.filter(e=>e.dow===i),bb=a.filter(e=>e.buy).length;return{nm,n:a.length,c:pct(bb,a.length)}});
+  h+=`<div class="card"><h2>Conversión por día de la semana</h2>${vchart(D.map(q=>({v:q.c||0,top:q.c==null?"":Math.round(q.c)+"%",label:q.nm,sub:q.n?q.n+" at.":""})))}</div>`;
+
+  const bk=new Map();
+  for(const e of base){const k=bucket(e.date,gran),r=bk.get(k)||[0,0];r[0]++;if(e.buy)r[1]++;bk.set(k,r)}
+  const ks=[...bk.keys()].sort().slice(-24);
+  h+=`<div class="card"><h2>Evolución de la conversión</h2><div class="seg">${[["d","Día"],["w","Semana"],["m","Mes"],["y","Año"]].map(([g,t])=>`<button data-g="${g}" aria-pressed="${g===gran}">${t}</button>`).join("")}</div>${vchart(ks.map(k=>{const [a,c]=bk.get(k),v=pct(c,a);return{v,top:Math.round(v)+"%",label:blabel(k,gran),sub:c+"/"+a}}))}<p class="mut">${gran==="w"?"Semanas, indicadas por su lunes. ":""}Respeta el filtro de vendedor, no el de periodo.</p></div>`;
+
+  h+=`<div class="card"><h2>Conversión de la tienda</h2>${matrix(L,e=>"t",e=>"Toda la tienda")}</div>`;
+  h+=`<div class="card"><h2>Conversión por vendedor</h2>${matrix(L,e=>e.vk,e=>e.seller)}</div>`;
+
+  const nb=sel.filter(e=>!e.buy);
+  if(nb.length){
+    const rc=Object.keys(REASONS).map(k=>[REASONS[k],nb.filter(e=>e.code===k).length]).filter(r=>r[1]).sort((a,c)=>c[1]-a[1]);
+    h+=`<div class="card"><h2>Motivos de no compra</h2>`+rc.map(([nm,c])=>`<div class="hb"><span>${nm}</span><div><i style="width:${c*100/nb.length}%"></i></div><b>${c} · ${Math.round(c*100/nb.length)}%</b></div>`).join("")+otros(sel)+`</div>`;
+  }
+  out.innerHTML=h;
+}
+$("#out").onclick=e=>{const g=e.target.closest("[data-g]");if(g){gran=g.dataset.g;stats()}};
+["#f-se","#f-pe"].forEach(s=>$(s).onchange=stats);
+$("#csv").onclick=async()=>{
+  const rows=[["Fecha","Hora","Vendedor","Resultado","Motivo"]];
+  flat().sort((a,b)=>a.date.localeCompare(b.date)||a.m-b.m).forEach(e=>rows.push([e.date,pad(e.h)+":"+pad(e.m%60),e.seller,e.buy?"Compra":"No compra",e.buy?"":(REASONS[e.code]||e.code)+(e.txt?": "+e.txt:"")]));
+  const csv="\uFEFF"+rows.map(r=>r.map(c=>'"'+String(c).replace(/"/g,'""')+'"').join(";")).join("\n");
+  const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv"}));a.download="atenciones.csv";document.body.appendChild(a);a.click();a.remove();
+};
+
+/* ---------- acceso a estadísticas y arranque ---------- */
+function lockUI(msg){$("#lock").classList.remove("hidden");$("#statbox").classList.add("hidden");$("#lock-msg").textContent=msg||""}
+async function loadStats(){
+  const r=await call("getStats",S.key).catch(()=>({error:"red"}));
+  if(r.error){
+    S.key=null;try{localStorage.removeItem("lux_key")}catch(e){}
+    lockUI({clave:"Clave incorrecta.",bloqueado:"Demasiados intentos. Prueba de nuevo en 10 minutos.",sin_clave:"Falta configurar la clave en el script (propiedad CLAVE).",red:"No se pudieron cargar los datos."}[r.error]||"");
+    return;
+  }
+  S.all=r.rows.map(mk);S.loaded=true;
+  $("#lock").classList.add("hidden");$("#statbox").classList.remove("hidden");
+  stats();
+}
+$("#unlock").onclick=()=>{
+  const k=$("#in-key").value;if(!k)return;
+  S.key=k;if($("#rem").checked)try{localStorage.setItem("lux_key",k)}catch(e){}
+  $("#in-key").value="";$("#lock-msg").textContent="Comprobando…";loadStats();
+};
+$("#in-key").onkeydown=e=>{if(e.key==="Enter")$("#unlock").click()};
+$("#lockbtn").onclick=()=>{S.key=null;S.all=[];try{localStorage.removeItem("lux_key")}catch(e){}lockUI("")};
+function show(t){
+  tab=t;$("#v-reg").classList.toggle("hidden",t!=="reg");$("#v-st").classList.toggle("hidden",t!=="st");
+  $("#t-reg").setAttribute("aria-selected",t==="reg");$("#t-st").setAttribute("aria-selected",t==="st");
+  if(t==="reg")viewReg();else if(S.key)loadStats();else lockUI("");
+}
+$("#t-reg").onclick=()=>show("reg");$("#t-st").onclick=()=>show("st");
+try{S.key=localStorage.getItem("lux_key")}catch(e){}
+if(API.indexOf("script.google.com")<0)document.body.insertAdjacentHTML("afterbegin",'<p style="padding:16px;margin:0;background:#8a3a3a;color:#fff">Falta pegar la URL de la app web en el archivo index.html (línea const API).</p>');
+call("getNames").then(n=>{$("#dl-seller").innerHTML=n.map(x=>`<option value="${esc(x)}">`).join("")}).catch(()=>{});
+show("reg");
+setInterval(()=>{if(tab==="st"&&S.key&&!document.hidden)loadStats()},30000);
+</script>
+</body>
+</html>
